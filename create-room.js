@@ -86,6 +86,26 @@ function insertRoomInfo(sql) {  //데이터베이스에 방 정보 저장
     });
 }
 
+app.get('/create-room/add-participant', async (request, response) => {
+    friend_list = await getFriendsList(request.body.id);
+    response.status(200).json({
+        friend_list: friend_list
+    });
+});
+
+function getFriendsList(id){  //친구 목록 조회
+    sql = `SELECT friend_list FROM user WHERE id = '${id}'`;
+    return new Promise((resolve, reject) => {
+        db.query(sql, function (error, results, fields) {
+            if (error) {
+              reject({ error: '친구 목록 불러오기 실패' });
+            } else {
+              resolve(results);
+            }
+        });
+    });
+}
+
 app.listen(port, () => {
     console.log(`${port}번 포트에서 서버 실행 중`);
 });
